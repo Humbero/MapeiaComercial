@@ -4,6 +4,7 @@ import pandas as pd
 import geopandas as gpd
 import matplotlib.pyplot as plt
 import streamlit as st
+import plotly.express as px
 
 
 #tela de apresentação
@@ -19,10 +20,11 @@ if excel_carga is not None:
     df_user = pd.read_excel(excel_carga, engine='openpyxl')
 
 
-'''Tratamento interno de dados do usuário------------------------------------------------------------'''
+#Tratamento interno de dados do usuário------------------------------------------------------------------------------------------------
+
 #caga do arquivos de base referente a geometria do estado de pernambuco
-local_geo = 'C:/Users/humberto.araujo.ext/OneDrive - Cimento Nacional/ATIVIDADES/2024-07-01_AUTOMACAO COMERCIAL/ENTRADA/'
-gdf_PE = gpd.read_file(local_geo + "PE_MUNICIPIOS.geojson")
+local_geo = 'PE_MUNICIPIOS.geojson'
+gdf_PE = gpd.read_file("PE_MUNICIPIOS.geojson")
 
 #Definindo a coluna CD_NUM como números inteiros para garantir o processo de join
 df_user['CD_MUN'] = df_user['CD_MUN'].astype(int)
@@ -32,7 +34,8 @@ gdf_PE['CD_MUN'] =gdf_PE['CD_MUN'].astype(int)
 gdf_merge = gdf_PE.merge(df_user[['CD_MUN','CONSULTOR','DISTRIBUIDOR']], on='CD_MUN', how='left')
 
 
-'''Plot dos consultores---------------------------------'''
+#Plot dos consultores-----------------------------------------------------------------------------------------------------------------------
+
 # Ajuste o tamanho da figura para A4 em polegadas (A4 size: 8.27 x 11.69 inches)
 plt.figure(figsize=(841, 11189), tight_layout=True)
 
@@ -55,7 +58,24 @@ ax.set_frame_on(False)
 # Exiba o gráfico
 st.pyplot(plt)
 
-"""Plot dos distribuidores-----------------------------"""
+#plot com plotly express
+express_consultores = px.choropleth(gdf_merge,
+                                    geojson=gdf_merge.geometry,
+                                    locations=gdf_merge.index,
+                                    color='CONSULTOR',
+                                    projection='mercator',
+                                    color_discrete_sequence=px.colors.qualitative.Plotly)
+
+#Ajustando o foco para o plotado
+express_consultores .update_geos(
+    fitbounds='locations',
+    visible=False
+)
+
+
+
+express_consultores.show()
+#Plot dos distribuidores---------------------------------------------------------------------------------------------
 
 # Ajuste o tamanho da figura para A4 em polegadas (A4 size: 8.27 x 11.69 inches)
 plt.figure(figsize=(841, 11189), tight_layout=True)
@@ -81,4 +101,5 @@ plt.legend(ncol=2)
 plt.legend(bbox_to_anchor=(1,0.1))
 # Exiba o gráfico
 st.pyplot(plt)
+
 
