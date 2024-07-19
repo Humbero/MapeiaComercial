@@ -5,6 +5,8 @@ import geopandas as gpd
 import matplotlib.pyplot as plt
 import streamlit as st
 import plotly.express as px
+import folium
+from streamlit_folium import st_folium
 
 
 #tela de apresentação
@@ -72,9 +74,32 @@ express_consultores .update_geos(
     visible=False
 )
 
+st.plotly_chart(express_consultores)
 
+#plot com folium para teste
+#start do mapa
+mapteste = folium.Map()
 
-express_consultores.show()
+#configuração do mapa coroplético
+folium.Choropleth(
+    geo_data=gdf_merge,
+    name='Consultores',
+    data=gdf_merge,
+    columns=['CD_MUN','CONSULTOR'],
+    key_on='feature.properties.CD_MUN',
+    fill_color='RdBu',
+    legend_name='Consultores'
+).add_to(mapteste)
+
+#ajuste para os dados plotados
+mapteste.fit_bounds(mapteste.get_bounds())
+
+#plot do mapa
+folium.LayerControl().add_to(mapteste)
+
+#plot no streamlit
+st_folium(mapteste, width=900, height=600)
+
 #Plot dos distribuidores---------------------------------------------------------------------------------------------
 
 # Ajuste o tamanho da figura para A4 em polegadas (A4 size: 8.27 x 11.69 inches)
