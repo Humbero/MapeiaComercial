@@ -4,9 +4,7 @@ import pandas as pd
 import geopandas as gpd
 import matplotlib.pyplot as plt
 import streamlit as st
-import plotly.express as px
-import folium
-from streamlit_folium import st_folium
+from io import BytesIO
 
 
 #tela de apresentação
@@ -22,109 +20,56 @@ if excel_carga is not None:
     df_user = pd.read_excel(excel_carga, engine='openpyxl')
 
 
-#Tratamento interno de dados do usuário------------------------------------------------------------------------------------------------
+    #Tratamento interno de dados do usuário------------------------------------------------------------------------------------------------
 
-#caga do arquivos de base referente a geometria do estado de pernambuco
-local_geo = 'PE_MUNICIPIOS.geojson'
-gdf_PE = gpd.read_file("PE_MUNICIPIOS.geojson")
+    #caga do arquivos de base referente a geometria do estado de pernambuco
+    gdf_PE = gpd.read_file("PE_MUNICIPIOS.geojson")
 
-#Definindo a coluna CD_NUM como números inteiros para garantir o processo de join
-df_user['CD_MUN'] = df_user['CD_MUN'].astype(int)
-gdf_PE['CD_MUN'] =gdf_PE['CD_MUN'].astype(int)
+    #Definindo a coluna CD_NUM como números inteiros para garantir o processo de join
+    df_user['CD_MUN'] = df_user['CD_MUN'].astype(int)
+    gdf_PE['CD_MUN'] =gdf_PE['CD_MUN'].astype(int)
 
-#join utilizando o código do município no IBGE contido na coluna "CD_MUN" como agregador da informação
-gdf_merge = gdf_PE.merge(df_user[['CD_MUN','CONSULTOR','DISTRIBUIDOR']], on='CD_MUN', how='left')
-
-
-#Plot dos consultores-----------------------------------------------------------------------------------------------------------------------
-
-# Ajuste o tamanho da figura para A4 em polegadas (A4 size: 8.27 x 11.69 inches)
-plt.figure(figsize=(841, 11189), tight_layout=True)
-
-# Plote o GeoDataFrame com as colunas especificadas e ajuste a legenda
-ax = gdf_merge.plot(column='CONSULTOR', legend=True)
-
-# Ajuste a posição da legenda para que não cubra o mapa
-# Por exemplo, coloque a legenda no canto inferior esquerdo com um espaçamento da borda
-leg = ax.get_legend()
-leg.set_bbox_to_anchor((1, 0.1))
-leg.set_title('Legenda', prop={'size': 10})  # Ajuste o tamanho da fonte da legenda
-
-# Remova os valores dos eixos x e y
-ax.set_xticks([])
-ax.set_yticks([])
-
-# Remova o retângulo em volta do mapa (frame)
-ax.set_frame_on(False)
-
-# Exiba o gráfico
-st.pyplot(plt)
-
-#plot com plotly express
-express_consultores = px.choropleth(gdf_merge,
-                                    geojson=gdf_merge.geometry,
-                                    locations=gdf_merge.index,
-                                    color='CONSULTOR',
-                                    projection='mercator',
-                                    color_discrete_sequence=px.colors.qualitative.Plotly)
-
-#Ajustando o foco para o plotado
-express_consultores .update_geos(
-    fitbounds='locations',
-    visible=False
-)
-
-st.plotly_chart(express_consultores)
-
-#plot com folium para teste
-#start do mapa
-mapteste = folium.Map()
-
-#configuração do mapa coroplético
-folium.Choropleth(
-    geo_data=gdf_merge,
-    name='Consultores',
-    data=gdf_merge,
-    columns=['CD_MUN','CONSULTOR'],
-    key_on='feature.properties.CD_MUN',
-    fill_color='RdBu',
-    legend_name='Consultores'
-).add_to(mapteste)
-
-#ajuste para os dados plotados
-mapteste.fit_bounds(mapteste.get_bounds())
-
-#plot do mapa
-folium.LayerControl().add_to(mapteste)
-
-#plot no streamlit
-st_folium(mapteste, width=900, height=600)
-
-#Plot dos distribuidores---------------------------------------------------------------------------------------------
-
-# Ajuste o tamanho da figura para A4 em polegadas (A4 size: 8.27 x 11.69 inches)
-plt.figure(figsize=(841, 11189), tight_layout=True)
-
-# Plote o GeoDataFrame com as colunas especificadas e ajuste a legenda
-ax = gdf_merge.plot(column='DISTRIBUIDOR', legend=True)
-
-# Ajuste a posição da legenda para que não cubra o mapa
-# Por exemplo, coloque a legenda no canto inferior esquerdo com um espaçamento da borda
-#leg = ax.get_legend()
-#leg.set_bbox_to_anchor((1, 0.1))
-#leg.set_title('Legenda', prop={'size': 10})  # Ajuste o tamanho da fonte da legenda
-
-# Remova os valores dos eixos x e y
-ax.set_xticks([])
-ax.set_yticks([])
-
-# Remova o retângulo em volta do mapa (frame)
-ax.set_frame_on(False)
-
-plt.legend(fontsize='10')
-plt.legend(ncol=2)
-plt.legend(bbox_to_anchor=(1,0.1))
-# Exiba o gráfico
-st.pyplot(plt)
+    #join utilizando o código do município no IBGE contido na coluna "CD_MUN" como agregador da informação
+    gdf_merge = gdf_PE.merge(df_user[['CD_MUN','CONSULTOR','DISTRIBUIDOR']], on='CD_MUN', how='left')
 
 
+    #Plot dos consultores-----------------------------------------------------------------------------------------------------------------------
+
+    # Ajuste o tamanho da figura para A4 em polegadas (A4 size: 8.27 x 11.69 inches)
+    plt.figure(figsize=(841, 11189))
+
+    # Plote o GeoDataFrame com as colunas especificadas e ajuste a legenda
+    ax = gdf_merge.plot(column='CONSULTOR', legend=True, edgecolor='lightgray', linewidth=0.5)
+
+    # Título do mapa
+    plt.title("Distribuição dos consultores", fontsize=16)
+
+    # Ajuste a posição da legenda para que não cubra o mapa
+    leg = ax.get_legend()
+    leg.set_bbox_to_anchor((1, 0.1))
+    leg.set_title('Legenda', prop={'size': 9})
+    for text in leg.get_texts  ():
+        text.set_fontsize(8)
+
+    # Remova os valores dos eixos x e y
+    ax.set_xticks([])
+    ax.set_yticks([])
+
+    # Remova o retângulo em volta do mapa (frame)
+    ax.set_frame_on(False)
+
+    # Exiba o gráfico
+    st.pyplot(plt)
+
+   # Salvar a figura em um buffer de memória para permitir o download
+    buffer = BytesIO()
+    plt.savefig(buffer, format='jpeg', dpi=600)
+    buffer.seek(0)
+
+    # Botão para download do mapa como JPEG
+    st.download_button(
+        label="Baixar mapa como JPEG",
+        data=buffer,
+        file_name="mapa_consultores.jpeg",
+        mime="image/jpeg"
+    )
