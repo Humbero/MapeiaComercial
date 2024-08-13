@@ -42,7 +42,7 @@ if excel_carga is not None:
     ax = gdf_merge.plot(column='CONSULTOR', legend=True, edgecolor='lightgray', linewidth=0.5)
 
     # Título do mapa
-    plt.title("Distribuição dos consultores", fontsize=16)
+    plt.title("Área de atuação dos consultores", fontsize=16)
 
     # Ajuste a posição da legenda para que não cubra o mapa
     leg = ax.get_legend()
@@ -71,5 +71,46 @@ if excel_carga is not None:
         label="Baixar mapa como JPEG",
         data=buffer,
         file_name="mapa_consultores.jpeg",
+        mime="image/jpeg"
+    )
+
+    #Plot dos consultores-----------------------------------------------------------------------------------------------------------------------
+
+    # Ajuste o tamanho da figura para A4 em polegadas (A4 size: 8.27 x 11.69 inches)
+    plt.figure(figsize=(841, 11189))
+
+    # Plote o GeoDataFrame com as colunas especificadas e ajuste a legenda
+    ax = gdf_merge.plot(column='DISTRIBUIDOR', legend=True, edgecolor='lightgray', linewidth=0.5)
+
+    # Título do mapa
+    plt.title("Área de atuação dos distribuidores", fontsize=16)
+
+    # Ajuste a posição da legenda para que não cubra o mapa
+    leg = ax.get_legend()
+    leg.set_bbox_to_anchor((1, 0.1))
+    leg.set_title('Legenda', prop={'size': 9})
+    for text in leg.get_texts  ():
+        text.set_fontsize(8)
+
+    # Remova os valores dos eixos x e y
+    ax.set_xticks([])
+    ax.set_yticks([])
+
+    # Remova o retângulo em volta do mapa (frame)
+    ax.set_frame_on(False)
+
+    # Exiba o gráfico
+    st.pyplot(plt)
+
+   # Salvar a figura em um buffer de memória para permitir o download
+    buffer = BytesIO()
+    plt.savefig(buffer, format='jpeg', dpi=600)
+    buffer.seek(0)
+
+    # Botão para download do mapa como JPEG
+    st.download_button(
+        label="Baixar mapa como JPEG",
+        data=buffer,
+        file_name="mapa_distribuidores.jpeg",
         mime="image/jpeg"
     )
