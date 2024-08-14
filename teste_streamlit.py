@@ -38,16 +38,14 @@ if excel_carga is not None:
     # Ajuste o tamanho da figura para A4 em polegadas (A4 size: 8.27 x 11.69 inches)
     plt.figure(figsize=(841, 11189))
 
-    # Plote o GeoDataFrame com as colunas especificadas e ajuste a legenda
-    ax = gdf_merge.plot(column='CONSULTOR', legend=True, edgecolor='lightgray', linewidth=0.5)
+# Plote o GeoDataFrame com as colunas especificadas e ajuste a legenda
+ax = gdf_merge.plot(column='CONSULTOR', legend=True)
 
-
-    # Ajuste a posição da legenda para que não cubra o mapa
-    leg = ax.get_legend()
-    leg.set_bbox_to_anchor((1, 0.1))
-    leg.set_title('Legenda', prop={'size': 9})
-    for text in leg.get_texts  ():
-        text.set_fontsize(8)
+# Ajuste a posição da legenda para que não cubra o mapa
+# Por exemplo, coloque a legenda no canto inferior esquerdo com um espaçamento da borda
+leg = ax.get_legend()
+leg.set_bbox_to_anchor((1, 0.1))
+leg.set_title('Legenda', prop={'size': 10})  # Ajuste o tamanho da fonte da legenda
 
     # Remova os valores dos eixos x e y
     ax.set_xticks([])
@@ -56,12 +54,8 @@ if excel_carga is not None:
     # Remova o retângulo em volta do mapa (frame)
     ax.set_frame_on(False)
 
-
-    #Texto título de elemento para o mapa
-    st.write("Área de atuação dos consultores")
-
-    # Exiba o gráfico
-    st.pyplot(plt)
+# Exiba o gráfico
+st.pyplot(plt)
 
    # Salvar a figura em um buffer de memória para permitir o download
     buffer = BytesIO()
@@ -81,10 +75,8 @@ if excel_carga is not None:
     # Ajuste o tamanho da figura para A4 em polegadas (A4 size: 8.27 x 11.69 inches)
     plt.figure(figsize=(841, 11189))
 
-    # Plote o GeoDataFrame com as colunas especificadas e ajuste a legenda
-    ax = gdf_merge.plot(column='DISTRIBUIDOR', legend=True, edgecolor='lightgray', linewidth=0.5)
-
-  
+# Plote o GeoDataFrame com as colunas especificadas e ajuste a legenda
+ax = gdf_merge.plot(column='DISTRIBUIDOR', legend=True)
 
     # Ajuste a posição da legenda para que não cubra o mapa
     leg = ax.get_legend()
@@ -97,14 +89,14 @@ if excel_carga is not None:
     ax.set_xticks([])
     ax.set_yticks([])
 
-    # Remova o retângulo em volta do mapa (frame)
-    ax.set_frame_on(False)
-    
-    #Texto título de elemento para o mapa
-    st.write("Área de atuação dos distribuidores")
+# Remova o retângulo em volta do mapa (frame)
+ax.set_frame_on(False)
 
-    # Exiba o gráfico
-    st.pyplot(plt)
+plt.legend(fontsize='10')
+plt.legend(ncol=2)
+plt.legend(bbox_to_anchor=(1,0.1))
+# Exiba o gráfico
+st.pyplot(plt)
 
    # Salvar a figura em um buffer de memória para permitir o download
     buffer = BytesIO()
