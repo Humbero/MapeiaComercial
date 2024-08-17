@@ -3,3 +3,4 @@ geopandas
 matplotlib
 streamlit
 Python-IO
+openpyxl
