@@ -7,6 +7,7 @@ Este projeto trata de uma ferramenta simples para a criação de mapas espaciali
 
 
 ## Desenvolvedores do projeto
-[Cleber Fontes](https://www.linkedin.com/in/cleber-mesquita-fontes-4458793b/)
-[Eloizio Dantas](https://www.linkedin.com/in/eloiziohmdantas/)
-[Humberto Araújo](https://www.linkedin.com/in/humberto-ara%C3%BAjo-743110b6/)
+
+1. [Cleber Fontes](https://www.linkedin.com/in/cleber-mesquita-fontes-4458793b/)
+2. [Eloizio Dantas](https://www.linkedin.com/in/eloiziohmdantas/)
+3. [Humberto Araújo](https://www.linkedin.com/in/humberto-ara%C3%BAjo-743110b6/)
