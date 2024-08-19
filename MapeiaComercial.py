@@ -8,7 +8,7 @@ from io import BytesIO
 
 
 #apresentação da ferramenta/título
-st.title('MapeiaAIComercial')
+st.title('MapeiaComercial')
 st.write('Ferramenta para a geração de mapas espacializando as áreas de atuação de vendedores e distribuidores')
 
 
@@ -20,13 +20,6 @@ estados = ['AC','AL','AP','AM','BA','CE','DF','ES','GO','MA','MT','MS','MG','PA'
 st.write('### Preenchimento de dados iniciais')
 
 estado_selecionado = st.selectbox('##### Selecione o estado que deseja mapear:',estados)
-st.write('**Colinhas de ajuda com as siglas dos estados** ')
-st.write('**Região norte:** Acre (AC), Amapá (AP), Amazonas (AM), Pará (PA), Rondônia (RO), Roraima (RR) e Tocantins (TO)')
-st.write('**Região nordeste:** Maranhão (MA), Piauí (PI), Ceará (CE), Rio Grande do Norte (RN), Paraíba (PB), Pernambuco (PE), Alagoas (AL), Sergipe (SE) e Bahia (BA)')
-st.write('**Região centro-oeste:** Distrito Federal (DF). Os estados são: Goiás (GO), Mato Grosso (MT) e Mato Grosso do Sul (MS)')
-st.write('**Região sudeste:** São Paulo (SP), Rio de Janeiro (RJ), Minas Gerais (MG) e Espírito Santo (ES)')
-st.write('**Região sul:** Paraná (PR), Santa Catarina (SC) e Rio Grande do Sul (RS)')
-
 
 #função para carga do arquivo e filtro por estado tendo como entrada apenas a sigla do estado
 def carga_gdf(estado):
@@ -79,8 +72,6 @@ gdf_selecionado = carga_gdf(estado_selecionado)
 
 #carga de arquivo do tipo excel fornecido pelo usuário
 st.subheader("Carregue o arquivo do tipo excel(.xlsx) com suas contribuições:")
-st.write('**OBS1**: O arquvivo precisa conter em suas colunas o código do município, nome do município e sigla do estado, além dos dados de distribuidor e consultor')
-st.write('**OBS2**: Caso o município não possua dado de consultor ou distribuidor sugerimos que seja indicado com alguma referência, exemplo: "sem dado", para evitar erros na produção dos mapas')
 excel_carga = st.file_uploader("Escolhar um arquivo excel", type=['xlsx'])
 
 #validação de arquivo
@@ -93,7 +84,7 @@ if excel_carga is not None:
     #Tratamento interno de dados------------------------------------------------------------------------------------------------
 
     #Definindo a coluna CD_NUM como números inteiros para garantir o processo de join
-    df_user['CD_MUN'] = df_user['CD_MUN'].astype(int)
+    df_user['COD_MUN'] = df_user['COD_MUN'].astype(int)
     gdf_selecionado['CD_MUN'] =gdf_selecionado['CD_MUN'].astype(int)
 
     #join utilizando o código do município no IBGE contido na coluna "CD_MUN" como agregador da informação
@@ -117,7 +108,7 @@ if excel_carga is not None:
 
     #adicionando o nome dos municípios ao mapa em fonte de tamanho 2
     for x, y, label in zip(gdf_merge.geometry.centroid.x, gdf_merge.geometry.centroid.y, gdf_merge['NM_MUN']):
-        ax.annotate(label, xy=(x, y), xytext=(3, 3), textcoords="offset points", fontsize=2, color='black', ha='center')
+        ax.annotate(label, xy=(x, y), xytext=(3, 3), textcoords="offset points", fontsize=1, color='black', ha='center')
     # Remova os valores dos eixos x e y
     ax.set_xticks([])
     ax.set_yticks([])
@@ -160,7 +151,7 @@ if excel_carga is not None:
 
     #adicionando o nome dos municípios ao mapa em fonte de tamanho 2
     for x, y, label in zip(gdf_merge.geometry.centroid.x, gdf_merge.geometry.centroid.y, gdf_merge['NM_MUN']):
-        ax.annotate(label, xy=(x, y), xytext=(3, 3), textcoords="offset points", fontsize=2, color='black', ha='center')
+        ax.annotate(label, xy=(x, y), xytext=(3, 3), textcoords="offset points", fontsize=1, color='black', ha='center')
 
     # Remova os valores dos eixos x e y
     ax.set_xticks([])
