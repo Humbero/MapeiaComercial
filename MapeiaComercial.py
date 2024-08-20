@@ -111,7 +111,7 @@ if excel_carga is not None:
 
     #adicionando o nome dos municípios ao mapa em fonte de tamanho 2
     for x, y, label in zip(gdf_merge.geometry.centroid.x, gdf_merge.geometry.centroid.y, gdf_merge['NM_MUN']):
-        ax.annotate(label, xy=(x, y), xytext=(3, 3), textcoords="offset points", fontsize=1, color='black', ha='center')
+        ax.annotate(label, xy=(x, y), fontsize=1, color='black', ha='center')
 
     # Remova os valores dos eixos x e y
     ax.set_xticks([])
@@ -158,7 +158,7 @@ if excel_carga is not None:
 
     #adicionando o nome dos municípios ao mapa em fonte de tamanho 2
     for x, y, label in zip(gdf_merge.geometry.centroid.x, gdf_merge.geometry.centroid.y, gdf_merge['NM_MUN']):
-        ax.annotate(label, xy=(x, y), xytext=(3, 3), textcoords="offset points", fontsize=1, color='black', ha='center')
+        ax.annotate(label, xy=(x, y), fontsize=1, color='black', ha='center')
 
     # Remova os valores dos eixos x e y
     ax.set_xticks([])
