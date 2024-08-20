@@ -8,7 +8,7 @@ from io import BytesIO
 
 
 #apresentação da ferramenta/título
-st.title('MapeiaAIComercial')
+st.title('MapeiaComercial')
 st.write('Ferramenta para a geração de mapas espacializando as áreas de atuação de vendedores e distribuidores')
 
 
@@ -20,13 +20,6 @@ estados = ['AC','AL','AP','AM','BA','CE','DF','ES','GO','MA','MT','MS','MG','PA'
 st.write('### Preenchimento de dados iniciais')
 
 estado_selecionado = st.selectbox('##### Selecione o estado que deseja mapear:',estados)
-st.write('**Colinhas de ajuda com as siglas dos estados** ')
-st.write('**Região norte:** Acre (AC), Amapá (AP), Amazonas (AM), Pará (PA), Rondônia (RO), Roraima (RR) e Tocantins (TO)')
-st.write('**Região nordeste:** Maranhão (MA), Piauí (PI), Ceará (CE), Rio Grande do Norte (RN), Paraíba (PB), Pernambuco (PE), Alagoas (AL), Sergipe (SE) e Bahia (BA)')
-st.write('**Região centro-oeste:** Distrito Federal (DF). Os estados são: Goiás (GO), Mato Grosso (MT) e Mato Grosso do Sul (MS)')
-st.write('**Região sudeste:** São Paulo (SP), Rio de Janeiro (RJ), Minas Gerais (MG) e Espírito Santo (ES)')
-st.write('**Região sul:** Paraná (PR), Santa Catarina (SC) e Rio Grande do Sul (RS)')
-
 
 #função para carga do arquivo e filtro por estado tendo como entrada apenas a sigla do estado
 def carga_gdf(estado):
@@ -93,11 +86,11 @@ if excel_carga is not None:
     #Tratamento interno de dados------------------------------------------------------------------------------------------------
 
     #Definindo a coluna CD_NUM como números inteiros para garantir o processo de join
-    df_user['CD_MUN'] = df_user['CD_MUN'].astype(int)
+    df_user['CODIBGE'] = df_user['CODIBGE'].astype(int)
     gdf_selecionado['CD_MUN'] =gdf_selecionado['CD_MUN'].astype(int)
 
     #join utilizando o código do município no IBGE contido na coluna "CD_MUN" como agregador da informação
-    gdf_merge = gdf_selecionado.merge(df_user[['CD_MUN','CONSULTOR','DISTRIBUIDOR']], on='CD_MUN', how='left')
+    gdf_merge = gdf_selecionado.merge(df_user[['CODIBGE','CONSULTOR','DISTRIBUIDOR']], left_on='CD_MUN',right_on='CODIBGE', how='left')
 
  
     #Plot dos consultores-----------------------------------------------------------------------------------------------------------------------
@@ -105,8 +98,11 @@ if excel_carga is not None:
     # Ajuste o tamanho da figura para A4
     plt.figure(figsize=(841, 11189))
 
+    #plot do estado em branco como base, caso haja espaços vazios o vetor aparecerá normalmente
+    ax = gdf_selecionado.plot(color='white', edgecolor='lightgray', linewidth=0.5)
+
     # Plote o GeoDataFrame com as colunas especificadas e ajuste a legenda
-    ax = gdf_merge.plot(column='CONSULTOR', legend=True, edgecolor='lightgray', linewidth=0.5)
+    gdf_merge.plot(column='CONSULTOR', legend=True, ax=ax, edgecolor='lightgray', linewidth=0.5)
 
     # Ajuste a posição da legenda para que não cubra o mapa e tenha um tamanho = 8
     leg = ax.get_legend()
@@ -117,7 +113,8 @@ if excel_carga is not None:
 
     #adicionando o nome dos municípios ao mapa em fonte de tamanho 2
     for x, y, label in zip(gdf_merge.geometry.centroid.x, gdf_merge.geometry.centroid.y, gdf_merge['NM_MUN']):
-        ax.annotate(label, xy=(x, y), xytext=(3, 3), textcoords="offset points", fontsize=2, color='black', ha='center')
+        ax.annotate(label, xy=(x, y), xytext=(3, 3), textcoords="offset points", fontsize=1, color='black', ha='center')
+    
     # Remova os valores dos eixos x e y
     ax.set_xticks([])
     ax.set_yticks([])
@@ -132,7 +129,7 @@ if excel_carga is not None:
 
    # Salvar a figura em um buffer de memória para permitir o download
     buffer = BytesIO()
-    plt.savefig(buffer, format='jpeg', dpi=600)
+    plt.savefig(buffer, format='jpeg', dpi=800)
     buffer.seek(0)
 
     # Botão para download do mapa como JPEG
@@ -148,8 +145,11 @@ if excel_carga is not None:
     # Ajuste o tamanho da figura para A4 em polegadas (A4 size: 8.27 x 11.69 inches)
     plt.figure(figsize=(841, 11189))
 
+    #plot do estado em branco como base, caso haja espaços vazios o vetor aparecerá normalmente
+    ax = gdf_selecionado.plot(color='white', edgecolor='lightgray', linewidth=0.5)
+
     # Plote o GeoDataFrame com as colunas especificadas e ajuste a legenda
-    ax = gdf_merge.plot(column='DISTRIBUIDOR', legend=True, edgecolor='lightgray', linewidth=0.5)
+    gdf_merge.plot(column='DISTRIBUIDOR', legend=True,ax=ax, edgecolor='lightgray', linewidth=0.5)
 
     # Ajuste a posição da legenda para que não cubra o mapa
     leg = ax.get_legend()
@@ -160,7 +160,7 @@ if excel_carga is not None:
 
     #adicionando o nome dos municípios ao mapa em fonte de tamanho 2
     for x, y, label in zip(gdf_merge.geometry.centroid.x, gdf_merge.geometry.centroid.y, gdf_merge['NM_MUN']):
-        ax.annotate(label, xy=(x, y), xytext=(3, 3), textcoords="offset points", fontsize=2, color='black', ha='center')
+        ax.annotate(label, xy=(x, y), xytext=(3, 3), textcoords="offset points", fontsize=1, color='black', ha='center')
 
     # Remova os valores dos eixos x e y
     ax.set_xticks([])
@@ -177,7 +177,7 @@ if excel_carga is not None:
 
    # Salvar a figura em um buffer de memória para permitir o download
     buffer = BytesIO()
-    plt.savefig(buffer, format='jpeg', dpi=600)
+    plt.savefig(buffer, format='jpeg', dpi=800)
     buffer.seek(0)
 
     # Botão para download do mapa como JPEG
