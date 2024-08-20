@@ -72,8 +72,6 @@ gdf_selecionado = carga_gdf(estado_selecionado)
 
 #carga de arquivo do tipo excel fornecido pelo usuário
 st.subheader("Carregue o arquivo do tipo excel(.xlsx) com suas contribuições:")
-st.write('**OBS1**: O arquvivo precisa conter em suas colunas o código do município, nome do município e sigla do estado, além dos dados de distribuidor e consultor')
-st.write('**OBS2**: Caso o município não possua dado de consultor ou distribuidor sugerimos que seja indicado com alguma referência, exemplo: "sem dado", para evitar erros na produção dos mapas')
 excel_carga = st.file_uploader("Escolhar um arquivo excel", type=['xlsx'])
 
 #validação de arquivo
@@ -86,7 +84,11 @@ if excel_carga is not None:
     #Tratamento interno de dados------------------------------------------------------------------------------------------------
 
     #Definindo a coluna CD_NUM como números inteiros para garantir o processo de join
+<<<<<<< HEAD
     df_user['CODIBGE'] = df_user['CODIBGE'].astype(int)
+=======
+    df_user['COD_MUN'] = df_user['COD_MUN'].astype(int)
+>>>>>>> 400d6b1e168ddf55c8c408b6d47a06b82f3621ac
     gdf_selecionado['CD_MUN'] =gdf_selecionado['CD_MUN'].astype(int)
 
     #join utilizando o código do município no IBGE contido na coluna "CD_MUN" como agregador da informação
@@ -114,7 +116,10 @@ if excel_carga is not None:
     #adicionando o nome dos municípios ao mapa em fonte de tamanho 2
     for x, y, label in zip(gdf_merge.geometry.centroid.x, gdf_merge.geometry.centroid.y, gdf_merge['NM_MUN']):
         ax.annotate(label, xy=(x, y), xytext=(3, 3), textcoords="offset points", fontsize=1, color='black', ha='center')
+<<<<<<< HEAD
     
+=======
+>>>>>>> 400d6b1e168ddf55c8c408b6d47a06b82f3621ac
     # Remova os valores dos eixos x e y
     ax.set_xticks([])
     ax.set_yticks([])
