@@ -84,11 +84,7 @@ if excel_carga is not None:
     #Tratamento interno de dados------------------------------------------------------------------------------------------------
 
     #Definindo a coluna CD_NUM como números inteiros para garantir o processo de join
-<<<<<<< HEAD
     df_user['CODIBGE'] = df_user['CODIBGE'].astype(int)
-=======
-    df_user['COD_MUN'] = df_user['COD_MUN'].astype(int)
->>>>>>> 400d6b1e168ddf55c8c408b6d47a06b82f3621ac
     gdf_selecionado['CD_MUN'] =gdf_selecionado['CD_MUN'].astype(int)
 
     #join utilizando o código do município no IBGE contido na coluna "CD_MUN" como agregador da informação
@@ -116,10 +112,7 @@ if excel_carga is not None:
     #adicionando o nome dos municípios ao mapa em fonte de tamanho 2
     for x, y, label in zip(gdf_merge.geometry.centroid.x, gdf_merge.geometry.centroid.y, gdf_merge['NM_MUN']):
         ax.annotate(label, xy=(x, y), xytext=(3, 3), textcoords="offset points", fontsize=1, color='black', ha='center')
-<<<<<<< HEAD
-    
-=======
->>>>>>> 400d6b1e168ddf55c8c408b6d47a06b82f3621ac
+
     # Remova os valores dos eixos x e y
     ax.set_xticks([])
     ax.set_yticks([])
